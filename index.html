@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="description" content="copa — a browser-resident code editor. Your files never leave your machine." />
+    <title>copa</title>
+  </head>
+  <body>
+    <div id="app" hidden>
+      <div id="workbench">
+        <aside id="sidebar">
+          <header class="sidebar-head">
+            <span class="sidebar-title">Explorer</span>
+            <div class="sidebar-actions">
+              <button id="btn-new-file" title="New File (Ctrl/Cmd+N)" aria-label="New File">＋</button>
+              <button id="btn-new-folder" title="New Folder" aria-label="New Folder">🗀</button>
+              <button id="btn-refresh" title="Refresh Explorer" aria-label="Refresh">⟳</button>
+            </div>
+          </header>
+          <div id="tree" class="tree" role="tree" tabindex="0"></div>
+          <footer class="sidebar-foot">
+            <button id="btn-download" title="Download the active file">Download</button>
+            <button id="btn-lock" title="Lock the workspace">Lock</button>
+          </footer>
+        </aside>
+
+        <main id="main">
+          <div id="tabs" class="tabs" role="tablist"></div>
+          <div id="editor-host"></div>
+          <section id="placeholder" class="placeholder">
+            <div class="placeholder-logo">⌘</div>
+            <h1>copa</h1>
+            <p>A code editor that runs entirely in this tab.</p>
+            <ul class="shortcuts">
+              <li><kbd>Ctrl</kbd><kbd>N</kbd><span>New file</span></li>
+              <li><kbd>Ctrl</kbd><kbd>S</kbd><span>Save</span></li>
+              <li><kbd>Ctrl</kbd><kbd>F</kbd><span>Find</span></li>
+              <li><kbd>Alt</kbd><kbd>↑↓</kbd><span>Move line</span></li>
+            </ul>
+            <p class="placeholder-note">
+              Files are stored in this browser's private filesystem — nothing is uploaded.
+            </p>
+          </section>
+        </main>
+      </div>
+
+      <footer id="statusbar">
+        <span id="status-path" class="status-item">No file open</span>
+        <span class="status-spacer"></span>
+        <span id="status-save" class="status-item"></span>
+        <span id="status-pos" class="status-item"></span>
+        <span id="status-indent" class="status-item"></span>
+        <span id="status-lang" class="status-item"></span>
+      </footer>
+    </div>
+
+    <div id="toast" class="toast" role="status" hidden></div>
+    <noscript>copa is an editor — it needs JavaScript enabled.</noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

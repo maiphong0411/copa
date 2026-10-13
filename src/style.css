@@ -1,0 +1,598 @@
+/* VS Code's Dark+ palette, so the chrome around Monaco matches the theme
+   inside it. Monaco only themes the text surface; everything else is ours. */
+:root {
+  --bg: #1e1e1e;
+  --bg-sidebar: #252526;
+  --bg-tabs: #2d2d2d;
+  --bg-tab-active: #1e1e1e;
+  --bg-status: #007acc;
+  --bg-hover: #2a2d2e;
+  --bg-selected: #37373d;
+  --border: #3c3c3c;
+  --fg: #cccccc;
+  --fg-dim: #8b8b8b;
+  --fg-bright: #ffffff;
+  --accent: #007acc;
+  --danger: #f14c4c;
+  --warn: #e2c08d;
+  --ui-font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Ubuntu, 'Helvetica Neue', sans-serif;
+  --mono: 'SF Mono', Menlo, Monaco, 'Cascadia Code', Consolas, monospace;
+  --row: 22px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font: 13px/1.5 var(--ui-font);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+}
+
+/* ---- layout ----------------------------------------------------------
+   The workbench takes all remaining height and the status bar sits on a
+   fixed row, so the editor never has to guess its own size. */
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#app[hidden] {
+  display: none;
+}
+
+#workbench {
+  flex: 1;
+  display: flex;
+  min-height: 0;
+}
+
+/* ---- sidebar ---------------------------------------------------------- */
+#sidebar {
+  width: 240px;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sidebar);
+  border-right: 1px solid var(--border);
+  min-height: 0;
+}
+
+.sidebar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 35px;
+  padding: 0 4px 0 12px;
+  flex: none;
+}
+
+.sidebar-title {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+}
+
+.sidebar-actions {
+  display: flex;
+  gap: 1px;
+}
+
+.sidebar-actions button {
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1;
+  color: var(--fg);
+  opacity: 0.75;
+}
+
+.sidebar-actions button:hover {
+  background: #ffffff14;
+  opacity: 1;
+}
+
+.sidebar-foot {
+  flex: none;
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-foot button {
+  flex: 1;
+  padding: 4px 0;
+  font-size: 11px;
+  color: var(--fg-dim);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+
+.sidebar-foot button:hover {
+  color: var(--fg-bright);
+  border-color: var(--accent);
+}
+
+/* ---- tree ------------------------------------------------------------- */
+.tree {
+  flex: 1;
+  overflow: auto;
+  padding-bottom: 8px;
+  user-select: none;
+  outline: none;
+}
+
+.tree-empty {
+  padding: 12px;
+  color: var(--fg-dim);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: var(--row);
+  padding-right: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.row:hover {
+  background: var(--bg-hover);
+}
+
+.row.selected {
+  background: var(--bg-selected);
+}
+
+.twisty {
+  width: 12px;
+  flex: none;
+  text-align: center;
+  font-size: 11px;
+  color: var(--fg-dim);
+}
+
+.icon {
+  flex: none;
+  font-size: 11px;
+  width: 16px;
+  text-align: center;
+}
+
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.row-input {
+  cursor: default;
+  background: var(--bg-hover);
+}
+
+.name-input {
+  flex: 1;
+  min-width: 0;
+  height: 19px;
+  padding: 0 4px;
+  font: inherit;
+  color: var(--fg-bright);
+  background: #3c3c3c;
+  border: 1px solid var(--accent);
+  border-radius: 2px;
+  outline: none;
+}
+
+/* ---- main / tabs ------------------------------------------------------ */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  position: relative;
+}
+
+#main.drop-target::after {
+  content: 'Drop files to import';
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  color: var(--fg-bright);
+  background: #007acc26;
+  border: 2px dashed var(--accent);
+  pointer-events: none;
+}
+
+.tabs {
+  flex: none;
+  display: flex;
+  height: 35px;
+  background: var(--bg-tabs);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+  max-width: 180px;
+  padding: 0 8px 0 12px;
+  border-right: 1px solid #252526;
+  color: var(--fg-dim);
+  cursor: pointer;
+  /* A transparent top border reserves the space the active indicator fills,
+     so switching tabs doesn't shift the row by a pixel. */
+  border-top: 1px solid transparent;
+}
+
+.tab:hover {
+  background: #2a2a2a;
+}
+
+.tab.active {
+  background: var(--bg-tab-active);
+  color: var(--fg-bright);
+  border-top-color: var(--accent);
+}
+
+.tab-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tab-close {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 4px;
+  font-size: 10px;
+  line-height: 1;
+  opacity: 0;
+  color: inherit;
+}
+
+.tab:hover .tab-close,
+.tab.active .tab-close,
+.tab-close.dirty {
+  opacity: 1;
+}
+
+.tab-close.dirty {
+  font-size: 13px;
+  color: var(--fg);
+}
+
+.tab-close:hover {
+  background: #ffffff1f;
+}
+
+#editor-host {
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- placeholder ------------------------------------------------------ */
+.placeholder {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  background: var(--bg);
+  color: var(--fg-dim);
+  text-align: center;
+  padding: 24px;
+}
+
+.placeholder[hidden] {
+  display: none;
+}
+
+.placeholder-logo {
+  font-size: 48px;
+  opacity: 0.25;
+}
+
+.placeholder h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.1em;
+  color: var(--fg);
+}
+
+.placeholder p {
+  margin: 0;
+}
+
+.shortcuts {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.shortcuts li {
+  display: grid;
+  grid-template-columns: 44px 44px 1fr;
+  gap: 6px;
+  align-items: center;
+  text-align: left;
+}
+
+kbd {
+  display: inline-block;
+  padding: 2px 0;
+  text-align: center;
+  font: 11px var(--mono);
+  color: var(--fg);
+  background: #333;
+  border: 1px solid #4a4a4a;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+}
+
+.placeholder-note {
+  margin-top: 24px;
+  font-size: 11px;
+  opacity: 0.6;
+  max-width: 340px;
+}
+
+/* ---- status bar ------------------------------------------------------- */
+#statusbar {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  height: 22px;
+  padding: 0 12px;
+  background: var(--bg-status);
+  color: #fff;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.status-spacer {
+  flex: 1;
+}
+
+#status-path {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  direction: rtl; /* keeps the filename visible when a long path is clipped */
+  text-align: left;
+}
+
+.status-item.warn {
+  font-weight: 600;
+}
+
+/* ---- lock screen ------------------------------------------------------ */
+.lock {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(circle at 50% 35%, #26323d, #141414 70%);
+  transition: opacity 0.2s ease;
+}
+
+.lock.unlocked {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.lock-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: min(320px, calc(100vw - 48px));
+  padding: 32px 28px;
+  background: #252526e6;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 16px 48px #0009;
+}
+
+.lock-card.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  25% {
+    transform: translateX(-6px);
+  }
+  75% {
+    transform: translateX(6px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lock-card.shake {
+    animation: none;
+  }
+  .lock {
+    transition: none;
+  }
+}
+
+.lock-logo {
+  font-size: 30px;
+  opacity: 0.6;
+}
+
+.lock-card h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 300;
+  letter-spacing: 0.16em;
+  color: var(--fg-bright);
+}
+
+.lock-sub {
+  margin: 0 0 6px;
+  font-size: 12px;
+  color: var(--fg-dim);
+  text-align: center;
+}
+
+.lock-input {
+  width: 100%;
+  padding: 8px 10px;
+  font: 14px var(--mono);
+  color: var(--fg-bright);
+  background: #3c3c3c;
+  border: 1px solid #4a4a4a;
+  border-radius: 4px;
+  outline: none;
+}
+
+.lock-input:focus {
+  border-color: var(--accent);
+}
+
+.lock-error {
+  margin: 0;
+  font-size: 12px;
+  color: var(--danger);
+  min-height: 1em;
+}
+
+.lock-error[hidden] {
+  display: none;
+}
+
+.lock-button {
+  width: 100%;
+  padding: 8px;
+  font-weight: 500;
+  color: #fff;
+  background: var(--accent);
+  border-radius: 4px;
+}
+
+.lock-button:hover {
+  background: #0e8ad8;
+}
+
+/* ---- context menu, toast, fatal --------------------------------------- */
+.context-menu {
+  position: fixed;
+  z-index: 60;
+  min-width: 150px;
+  padding: 4px;
+  background: #2d2d2d;
+  border: 1px solid #454545;
+  border-radius: 6px;
+  box-shadow: 0 4px 16px #0008;
+}
+
+.context-menu button {
+  display: block;
+  width: 100%;
+  padding: 5px 10px;
+  text-align: left;
+  border-radius: 4px;
+  font-size: 12px;
+}
+
+.context-menu button:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.context-menu button.danger:hover {
+  background: var(--danger);
+}
+
+.toast {
+  position: fixed;
+  right: 16px;
+  bottom: 34px;
+  z-index: 70;
+  max-width: 320px;
+  padding: 8px 14px;
+  font-size: 12px;
+  color: var(--fg-bright);
+  background: #333;
+  border: 1px solid #454545;
+  border-left: 3px solid var(--accent);
+  border-radius: 4px;
+  box-shadow: 0 4px 16px #0008;
+}
+
+.toast[hidden] {
+  display: none;
+}
+
+.toast.error {
+  border-left-color: var(--danger);
+}
+
+.fatal {
+  max-width: 520px;
+  margin: 15vh auto;
+  padding: 0 24px;
+  line-height: 1.7;
+  color: var(--fg);
+}
+
+.fatal h1 {
+  font-size: 20px;
+  font-weight: 400;
+  color: var(--fg-bright);
+}
+
+/* Narrow screens: the explorer would eat half the viewport, so shrink it. */
+@media (max-width: 700px) {
+  #sidebar {
+    width: 160px;
+  }
+  .shortcuts {
+    display: none;
+  }
+}
