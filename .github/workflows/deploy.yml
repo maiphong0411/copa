@@ -24,6 +24,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Runs first and on purpose: `enablement` lets the action turn Pages on
+      # via the API when it isn't configured yet, instead of failing the run
+      # with a 404 from the Get-Pages-site endpoint. Doing it before the build
+      # also means a misconfigured repo fails in 5 seconds, not after npm ci.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -43,7 +51,6 @@ jobs:
         # document for 404.html means deep links still boot the app.
         run: cp dist/index.html dist/404.html
 
-      - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
